@@ -43,36 +43,11 @@ namespace lve {
     }
 
     std::vector<VkVertexInputBindingDescription> LveModel::Vertex::getBindingDescriptions() {
-        // std::vector<VkVertexInputBindingDescription> bindingDescriptions{2};
-
-        // bindingDescriptions[0].binding = 0;
-        // bindingDescriptions[0].stride = sizeof(Vertex);
-        // bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-        // bindingDescriptions[1].binding = 1;
-        // bindingDescriptions[1].stride = sizeof(Vertex);
-        // bindingDescriptions[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-        // return {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX},
-        //         {1, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}};
-
         return {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}};
     }
 
     std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
-        // std::vector<VkVertexInputAttributeDescription> attributeDescriptions{2};
-
-        // attributeDescriptions[0].binding = 0;
-        // attributeDescriptions[0].location = 0;
-        // attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
-        // attributeDescriptions[0].offset = 0;
-
-        // attributeDescriptions[1].binding = 1;
-        // attributeDescriptions[1].location = 1;
-        // attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-        // attributeDescriptions[1].offset = sizeof(glm::vec2);
-
-        return {{0, 0, VK_FORMAT_R32G32_SFLOAT, 0},
-                {0, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec2)}};
+        return {{0, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, position)},
+                {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)}};
     }
 }  // namespace lve
