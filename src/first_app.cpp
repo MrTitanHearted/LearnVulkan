@@ -5,6 +5,7 @@
 
 namespace lve {
     FirstApp::FirstApp() {
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
@@ -22,6 +23,14 @@ namespace lve {
         }
 
         vkDeviceWaitIdle(lveDevice.device());
+    }
+
+    void FirstApp::loadModels() {
+        std::vector<LveModel::Vertex> vertices{{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                               {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+                                               {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+
+        lveModel = std::make_unique<LveModel>(lveDevice, vertices);
     }
 
     void FirstApp::createPipelineLayout() {
@@ -46,7 +55,7 @@ namespace lve {
                                                     "assets/shaders/simple_shader.frag.spv",
                                                     pipelineConfig);
     }
-    
+
     void FirstApp::createCommandBuffers() {
         commandBuffers.resize(lveSwapChain.imageCount());
 
@@ -63,7 +72,7 @@ namespace lve {
             VkCommandBufferBeginInfo beginInfo{};
             beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-            if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) 
+            if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS)
                 throw std::runtime_error("failed to begin recording command buffer!");
 
             VkRenderPassBeginInfo renderPassInfo{};
@@ -84,14 +93,15 @@ namespace lve {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             lvePipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            lveModel->bind(commandBuffers[i]);
+            lveModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
                 throw std::runtime_error("failed to record command buffer!");
         }
     }
-    
+
     void FirstApp::drawFrame() {
         uint32_t imageIndex;
         VkResult result = lveSwapChain.acquireNextImage(&imageIndex);
